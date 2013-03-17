@@ -1,0 +1,127 @@
+<HTML>
+<BODY>
+<p>A To Do list manager. </p>
+
+<p>This package contains the following classes. They are grouped by category. </p>
+
+<ol>
+
+	<li>Main Class
+
+		<dl>
+    	<dt><a href="TwoDue.html">TwoDue</a>
+        <dd>The main class. 
+		</dl>
+		
+	<li>Data Model
+	
+		<dl>
+		
+    	<dt><a href="ToDoItem.html">ToDoItem</a>
+        <dd>Represents one to do item. 
+        
+    	<dt><a href="ItemPriority.html">ItemPriority</a>
+        <dd>An object representing the priority of a ToDoItem.
+        
+      <dt><a href="ItemPriorityRenderer.html">ItemPriorityRenderer</a>
+        <dd>An object capable of rendering the priority of a ToDoItem
+   in a JTable cell.
+
+    	<dt><a href="Category.html">Category</a>
+        <dd>An object representing the category of a ToDoItem.
+        
+    	<dt><a href="ItemComparator.html">ItemComparator</a>
+        <dd>An object capable of comparing two ToDoItem objects and determining which comes first,
+            with variable sort parameters for sequencing.
+            
+    	<dt><a href="ItemSelector.html">ItemSelector</a>
+        <dd>An object indicating whether a given ToDoItem is selected, using variable selection
+            criteria.
+        
+    	<dt><a href="ToDoItems.html">ToDoItems</a>
+        <dd>Represents a collection of to do items, stored in memory, and unsorted. Zero to many ItemView objects
+            may be registered with a ToDoItems collection.
+        
+    	<dt><a href="ItemProxy.html">ItemProxy</a>
+        <dd>An item that points to a ToDoItem stored within a ToDoItems collection.
+        
+    	<dt><a href="ItemView.html">ItemView</a>
+        <dd>An interface for an object offering an alternate view of the data stored in a
+            ToDoItems collection. 
+        
+    	<dt><a href="ActorsList.html">ActorsList</a>
+        <dd>A list of all actors represented in the Assigned To field. Implements ItemsView.
+
+    	<dt><a href="CategoryList.html">CategoryList</a>
+        <dd>A list of all categories represented in the ToDoItems list. Implements ItemsView.
+        
+    	<dt><a href="SortedItems.html">SortedItems</a>
+        <dd>A view of the ToDoItems that allows the user to sort the list by
+            desired criteria. Implements ItemsView.
+
+    	<dt><a href="CategoryModel.html">CategoryModel</a>
+        <dd>A view of the ToDoItems, organized by category,
+            that can be used as a data model for a JTree view.
+
+    	<dt><a href="CategoryNode.html">CategoryNode</a>
+        <dd>One node in the CategoryModel tree.
+        
+		</dl>
+		
+	<li>Controller
+	
+		<dl>
+			<dt>TwoDueCommon
+				<dd>A common module with control methods and shared data. Most fields in this class are accessible
+				    by the rest of the package. 
+		</dl>
+		
+	<li>User Interface
+	
+		<dl>
+		
+		  <dt><a href="TwoDueTab.html">TwoDueTab</a>
+        <dd>An interface for any Tab that is part of the TwoDue interface. 
+		
+    	<dt><a href="AboutTab.html">AboutTab</a>
+        <dd>Information about the program and its environment. 
+        
+    	<dt><a href="ItemTab.html">ItemTab</a>
+        <dd>Shows primary fields associated with one ToDoItem.
+        
+    	<dt><a href="ListTab.html">ListTab</a>
+        <dd>Shows a list of ToDoItems, taken from a SortedItems view.
+        
+    	<dt><a href="PrefsTab.html">PrefsTab</a>
+        <dd>Allows user to specify his or her preferences.
+        
+    	<dt><a href="PurgeTab.html">PurgeTab</a>
+        <dd>Allows user to purge unwanted ToDoItems from the ToDoItems collection.
+        
+    	<dt><a href="RecursTab.html">RecursTab</a>
+        <dd>Shows ToDoItem fields related to the recurrence function. 
+        
+    	<dt><a href="ViewTab.html">ViewTab</a>
+        <dd>Allows the user to specify selection criteria and sort fields. 
+        
+		</dl>
+		
+	<li>Utility Classes
+	
+		<dl>
+		
+    	<dt><a href="DatePanel.html">DatePanel</a>
+        <dd>A GUI Panel showing a date and allowing it to be modified.  
+        
+    	<dt><a href="FileOpener.html">FileOpener</a>
+        <dd>An interface for a class capable of opening a file passed to it.
+        
+    	<dt><a href="RecentFilesMenu.html">RecentFilesMenu</a>
+        <dd>Keeps a list of recently accessed to do files, and makes them available to the user via a 
+            sub-menu on the File menu.
+        
+		</dl>
+		
+</ol>
+</BODY>
+</HTML>
