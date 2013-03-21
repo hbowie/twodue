@@ -540,11 +540,9 @@ public class TwoDueCommon
   
   public void addDefaultItem () {    
     newItem();
-    item.setTitle ("Register Two Due");
-    item.setDescription ("Register Two Due in order to remove the demo limitation"
-        + " of only 20 items."
-        + " Press the Launch button on the tool bar to purchase a license.");
-    item.setWebPage (UnregisteredWindow.STORE);
+    item.setTitle ("Add your to do items");
+    item.setDescription ("Add your items that need to be done. ");
+    // item.setWebPage (UnregisteredWindow.STORE);
     item.setDueDateToday();
     try {
       int i = items.add (item);
