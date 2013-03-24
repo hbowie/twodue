@@ -785,8 +785,8 @@ public abstract class TwoDueDiskStore {
   public void setViewIndex (String viewIndexString) {
 
     try {
-      int viewIndex = Integer.parseInt (viewIndexString);
-      setViewIndex (viewIndex);
+      int viewIndexWork = Integer.parseInt (viewIndexString);
+      setViewIndex (viewIndexWork);
     } catch (NumberFormatException e) {
       System.out.println ("TwoDueDiskStore.setViewIndex NumberFormatException:");
       System.out.println ("  input = " + viewIndexString);

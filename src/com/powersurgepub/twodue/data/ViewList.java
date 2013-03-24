@@ -406,6 +406,7 @@ public class ViewList {
     try {
       int index = Integer.parseInt (indexString);
       td.modifyView (index, TwoDueCommon.VIEW_TRIGGER_SELECT_VIEW_FROM_MENU);
+      td.setUnsavedChanges(true);
       // td.setView (index);
     } catch (NumberFormatException e) {
       System.out.println ("ViewList menuItemActionPerformed invalid number ("
