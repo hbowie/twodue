@@ -19,7 +19,8 @@ package com.powersurgepub.twodue;
  @author Herb Bowie
  */
 public class FolderSync 
-    extends javax.swing.JFrame {
+    extends javax.swing.JFrame
+      implements WindowToManage {
   
   private static final String FOLDER_SYNC = "FolderSync";
   private static final String UNDERLINES  = "==========";

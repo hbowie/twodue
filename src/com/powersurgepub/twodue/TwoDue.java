@@ -546,7 +546,7 @@ public class TwoDue
   
    @param window JFrame to be displayed.
    */
-  public void displayAuxiliaryWindow(JFrame window) {
+  public void displayAuxiliaryWindow(WindowToManage window) {
     window.setLocation(
         this.getX() + CHILD_WINDOW_X_OFFSET,
         this.getY() + CHILD_WINDOW_Y_OFFSET);
