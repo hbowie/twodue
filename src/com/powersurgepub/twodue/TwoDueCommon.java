@@ -1,3 +1,19 @@
+/*
+ * Copyright 2003 - 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.twodue;
 
   import com.powersurgepub.psdatalib.elements.*;
@@ -10,7 +26,6 @@ package com.powersurgepub.twodue;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.pstextmerge.*;
   import com.powersurgepub.psutils.*;
-  import com.powersurgepub.regcodes.*;
   import com.powersurgepub.twodue.data.*;
   import com.powersurgepub.twodue.disk.*;
   import com.powersurgepub.xos2.*;
@@ -29,17 +44,6 @@ package com.powersurgepub.twodue;
    An object accessible to most classes within the twodue package,
    that intentionally exposes its data for direct access. <p>
   
-   This code is copyright (c) 2003 by Herb Bowie.
-   All rights reserved. <p>
-  
-   Version History: <ul><li>
-      2003/11/01 - Originally written.
-       </ul>
-  
-   @author Herb Bowie of PowerSurge Publishing
-  
-   @version  
-      2004/06/24 - Added code to populate Edit menu.
  */
 public class TwoDueCommon 
     implements 
@@ -108,12 +112,6 @@ public class TwoDueCommon
   File                appFolder;
   TwoDueDiskDirectory files;
   ViewList            views;
-  
-  // Registration variables
-  RegisterWindow      registerWindow;
-  private static final int    DEMO_LIMIT    = 20;
-  private             RegistrationCode    registrationCode;
-  private             int                 warningsGiven = 0;
   
   boolean             selItemTab = true;
   
@@ -417,13 +415,17 @@ public class TwoDueCommon
     modifyView (-1, TwoDueCommon.VIEW_TRIGGER_PROGRAM_START);
     newUserPrefs();
     
-    aboutWindow = new AboutWindow ();
+    aboutWindow = new AboutWindow (
+      false,   // loadFromDisk
+      true,    // browserLauncher2Used
+      true,    // jxlUsed
+      true,    // pegdownUsed
+      true,    // xerces used
+      true,    // saxon used
+      "1999"); // copyRightYearFrom));
     
     folderSync = new FolderSync(this);
     // WindowMenuManager.getShared().add(folderSync);
-    
-    registerWindow = RegisterWindow.getShared();
-    registerWindow.setDemoLimit(DEMO_LIMIT);
     
     prefsWindow.getCommonPrefs().setSplitPane(split);
     
@@ -522,8 +524,6 @@ public class TwoDueCommon
           displayFile();
           diskStore.setTemplate (webWindow.getTemplate());
           rememberLastFile (diskStore);
-        } catch (RegistrationException reg) {
-          handleRegistrationException (reg);
         } catch (IOException e) {
           trouble.report ("Two Due data could not be saved",
               "File Save As Error");
@@ -544,11 +544,7 @@ public class TwoDueCommon
     item.setDescription ("Add your items that need to be done. ");
     // item.setWebPage (UnregisteredWindow.STORE);
     item.setDueDateToday();
-    try {
-      int i = items.add (item);
-    } catch (RegistrationException reg) {
-      handleRegistrationException (reg);
-    }
+    int i = items.add (item);
   }
   
   /**
@@ -634,7 +630,7 @@ public class TwoDueCommon
    */
   protected void fileOpenFresh 
       (TwoDueDiskStore diskStore, boolean processingArchive) {
-    warningsGiven = 0;
+    
     boolean openOK = true;;
     this.diskStore = diskStore;
 
@@ -658,8 +654,6 @@ public class TwoDueCommon
     try {
       diskStore.populate (items, dateFormatter);
       rememberLastFile (diskStore);
-    } catch (RegistrationException reg) {
-      handleRegistrationException (reg);
     } catch (IOException e) {
       openOK = false;
       if (processingArchive) {
@@ -797,9 +791,6 @@ public class TwoDueCommon
             + importFile.toString(),
             "File I/O Problem");
       }
-      catch (RegistrationException regExc) {
-        handleRegistrationException (regExc);
-      }
       // clearActionMsg();
       int added = (items.size() - before);
       if (added > 0) {
@@ -865,8 +856,6 @@ public class TwoDueCommon
         diskStore.setTemplate (webWindow.getTemplate());
         rememberLastFile (diskStore);
         boolean prefsOK = userPrefs.savePrefs();
-      } catch (RegistrationException reg) {
-        handleRegistrationException (reg);
       } catch (IOException e) {
           trouble.report ("Two Due data could not be saved",
               "File Save Error");
@@ -900,8 +889,6 @@ public class TwoDueCommon
         rememberLastFile (diskStore);
         // System.out.println("TwoDueCommon.fileSaveAs filePrep");
         filePrep();
-      } catch (RegistrationException reg) {
-        handleRegistrationException (reg);
       } catch (IOException e) {
         trouble.report ("Two Due data could not be saved",
             "File Save As Error");
@@ -1050,9 +1037,6 @@ public class TwoDueCommon
     catch (java.io.IOException e) {
       ok = false;
     }
-    catch (RegistrationException e) {
-      ok = false;
-    }
     if (ok) {
       Logger.getShared().recordEvent (LogEvent.NORMAL,
         "List backed up to " + backupTwoDueName.toString(),
@@ -1102,10 +1086,6 @@ public class TwoDueCommon
               + " Items restored from backup",
             false);
       } 
-      catch (RegistrationException reg) {
-        handleRegistrationException (reg);
-        ok = false;
-      }
       catch (IOException e) {
         trouble.report ("Two Due backup file could not be read",
               "File Revert From Backup Error");
@@ -1488,11 +1468,7 @@ public class TwoDueCommon
         next.setTags (replace);
         mods++;
         setUnsavedChanges (true);
-        try {
-          items.modify (next);
-        } catch (RegistrationException reg) {
-          handleRegistrationException (reg);
-        }
+        items.modify (next);
       } 
     } // end of  items
     displayItem();
@@ -1653,8 +1629,6 @@ public class TwoDueCommon
             oldDeletes++;
           } // end if next data rec not null
         } // end while more items in old archive
-      } catch (RegistrationException reg) {
-        handleRegistrationException (reg);
       } catch (IOException e) {
         trouble.report 
             ("Trouble Reading Prior Archive File "
@@ -1786,16 +1760,12 @@ public class TwoDueCommon
   public boolean newItem() {
     
     boolean ok = true;
-    if (items.roomForMore()) {
-      item = new ToDoItem ();
-      item.setStartTime (diskStore.getDefaultStartTime());
-      // item.setID ("");
-      newItem = true;
-      displayItemNumber();
-    } else {
-      handleRegistrationLimitation();
-      ok = false;
-    }
+
+    item = new ToDoItem ();
+    item.setStartTime (diskStore.getDefaultStartTime());
+    // item.setID ("");
+    newItem = true;
+    displayItemNumber();
     return ok;
 
   }
@@ -1872,20 +1842,12 @@ public class TwoDueCommon
 
       if (changed) {    
         if (newItem) {
-          try {
-            int i = items.add (item);
-          } catch (RegistrationException reg) {
-            handleRegistrationException (reg);
-          }
+          int i = items.add (item);
           newItem = false;
         } else {
-          try {
-            items.modify (item);
-            if (! item.getTitle().equalsIgnoreCase(originalTitle)) {
-              checkForFileRenames(item, originalTitle);
-            }
-          } catch (RegistrationException reg) {
-            handleRegistrationException (reg);
+          items.modify (item);
+          if (! item.getTitle().equalsIgnoreCase(originalTitle)) {
+            checkForFileRenames(item, originalTitle);
           }
         }
         // Shouldn't need to do this here, because SortedItems is doing
@@ -2042,40 +2004,6 @@ public class TwoDueCommon
     } else {
       return null;
     }
-  }
-
-  /**
-   Help the user purchase a software license for URL Union.
-   */
-  private void purchase () {
-    openURL (UnregisteredWindow.STORE);
-  }
-
-  private void register () {
-    WindowMenuManager.getShared().makeVisible(registerWindow);
-  }
-
-  /**
-   Handle the condition of not storing all user input due to the application
-   not being registered.
-
-   @param reg The registration exception generated.
-   */
-  public void handleRegistrationException (RegistrationException reg) {
-    handleRegistrationLimitation();
-  }
-
-  /**
-   Handle the condition of not saving all user input due to the application
-   not being registered.
-   */
-  private void handleRegistrationLimitation () {
-    if (warningsGiven == 0) {
-      Trouble.getShared().report("Unregistered copy will save no more than "
-        + String.valueOf(DEMO_LIMIT) + " items in Demo mode",
-        "Demo Warning");
-      warningsGiven++;
-    } 
   }
   
   public void setUnsavedChanges (boolean unsaved) {
@@ -2356,11 +2284,7 @@ public class TwoDueCommon
             item = new ToDoItem ();
             int numberOfFields = item.setFromTextBlock (block);
             if (numberOfFields > 0) {
-              try {
-                int i = items.add (item);
-              } catch (RegistrationException reg) {
-                handleRegistrationException (reg);
-              }
+              int i = items.add (item);
               itemsAdded++;
             } else { // end if number of fields > 0
               item = priorItem;
@@ -2373,12 +2297,8 @@ public class TwoDueCommon
             item.setDescription (blockText);
             item.setDefaultTitle();
             item.setType ("Action");
-            try {
-              int i = items.add (item);
-              itemsAdded++;
-            } catch (RegistrationException reg) {
-              handleRegistrationException (reg);
-            }
+            int i = items.add (item);
+            itemsAdded++;
           } // end if adding from unformatted text
         }
         if (itemsAdded == 0) {

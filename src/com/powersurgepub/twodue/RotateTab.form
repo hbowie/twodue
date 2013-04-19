@@ -39,7 +39,7 @@
         <Component class="javax.swing.JEditorPane" name="rotateEditorPane">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="contentType" type="java.lang.String" value="text/html"/>
+            <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="rotateEditorPaneMouseClicked"/>

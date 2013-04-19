@@ -1,3 +1,19 @@
+/*
+ * Copyright 2003 - 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.twodue.disk;
 
   import com.powersurgepub.psdatalib.txbio.*;
@@ -5,27 +21,12 @@ package com.powersurgepub.twodue.disk;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.template.*;
   import com.powersurgepub.psutils.*;
-  import com.powersurgepub.regcodes.*;
   import com.powersurgepub.twodue.data.*;
   import java.io.*;
   import java.text.*;
 
 /**
-   A parent class for a Two Due disk file or folder.<p>
-  
-   This code is copyright (c) 2003 by Herb Bowie.
-   All rights reserved. <p>
-  
-   Version History: <ul><li>
-       </ul>
-  
-   @author Herb Bowie (<a href="mailto:herb@powersurgepub.com">
-           herb@powersurgepub.com</a>)<br>
-           of PowerSurge Publishing 
-           (<a href="http://www.powersurgepub.com">
-           www.powersurgepub.com</a>)
-  
-   @version 2003/12/21 - Originally written.
+   A parent class for a Two Due disk file or folder.
  */
 public abstract class TwoDueDiskStore {
   
@@ -525,35 +526,31 @@ public abstract class TwoDueDiskStore {
   */
   public void populate ( // IDListHeader header, 
       ToDoItems items, DateFormat dateFormatter) 
-      throws RegistrationException, IOException {
-    try {
-      if (processingArchive) {
-        items.addAll (dateFormatter, archiveTDF);
-        Logger.getShared().recordEvent(LogEvent.NORMAL, 
-            "Loaded Two Due data from Archive TDF file " + archiveTDF.getFileName(), 
-            false);
-      }
-      else
-      if (toDoFileXML != null
-          && toDoFileXML.exists()
-          && toDoFileXML.canRead()
-          && toDoRecsXMLIn != null) {
-        toDoRecsXMLIn.openForInput(getRecDef());
-        DataRecord diskStoreRec = toDoRecsXMLIn.nextRecordIn();
-        setMultiple(diskStoreRec);
-        items.addAll (dateFormatter, toDoRecsXMLIn);
-        Logger.getShared().recordEvent(LogEvent.NORMAL, 
-            "Loaded Two Due data from XML file " + toDoFileXML.getPath(), 
-            false); 
-      } else {
-        items.addAll (dateFormatter, toDoTDF);
-        Logger.getShared().recordEvent(LogEvent.NORMAL, 
-            "Loaded Two Due data from TDF file " + toDoTDF.getFileName(), 
-            false);
-      }
-    } catch (RegistrationException regExc) {
-      setFileNowOpen (true);
-      throw regExc;
+      throws IOException {
+
+    if (processingArchive) {
+      items.addAll (dateFormatter, archiveTDF);
+      Logger.getShared().recordEvent(LogEvent.NORMAL, 
+          "Loaded Two Due data from Archive TDF file " + archiveTDF.getFileName(), 
+          false);
+    }
+    else
+    if (toDoFileXML != null
+        && toDoFileXML.exists()
+        && toDoFileXML.canRead()
+        && toDoRecsXMLIn != null) {
+      toDoRecsXMLIn.openForInput(getRecDef());
+      DataRecord diskStoreRec = toDoRecsXMLIn.nextRecordIn();
+      setMultiple(diskStoreRec);
+      items.addAll (dateFormatter, toDoRecsXMLIn);
+      Logger.getShared().recordEvent(LogEvent.NORMAL, 
+          "Loaded Two Due data from XML file " + toDoFileXML.getPath(), 
+          false); 
+    } else {
+      items.addAll (dateFormatter, toDoTDF);
+      Logger.getShared().recordEvent(LogEvent.NORMAL, 
+          "Loaded Two Due data from TDF file " + toDoTDF.getFileName(), 
+          false);
     }
     setFileNowOpen (true);
   }
@@ -568,7 +565,7 @@ public abstract class TwoDueDiskStore {
    @throws IOException If we had an disk error. 
   */
   public void populate (ToDoItems items, DateFormat dateFormatter, File inFile)
-      throws RegistrationException, IOException {
+      throws IOException {
     if (inFile != null
         && inFile.exists()
         && inFile.canRead()) {
@@ -603,7 +600,7 @@ public abstract class TwoDueDiskStore {
   }
   
   public void save (ToDoItems items)
-      throws RegistrationException, IOException {
+      throws IOException {
     if (processingArchive) {
       items.getAll (archiveTDF);
     } else {
@@ -626,8 +623,7 @@ public abstract class TwoDueDiskStore {
   }
   
   public void saveToXML (ToDoItems items, XMLRecordWriter xmlWriter) 
-      throws RegistrationException,
-             IOException {
+      throws IOException {
     RecordDefinition headerDef = getRecDef();
     xmlWriter.openForOutput(headerDef);
     xmlWriter.setRecTag(HEADER_TAG);

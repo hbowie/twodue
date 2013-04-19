@@ -1,17 +1,25 @@
+/*
+ * Copyright 2003 - 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.twodue.data;
 
-import com.powersurgepub.psdatalib.pstags.TagsList;
-import com.powersurgepub.psdatalib.pstags.TagsModel;
-import com.powersurgepub.psdatalib.pstags.TaggableList;
-import com.powersurgepub.psdatalib.txbio.XMLRecordWriter;
-import com.powersurgepub.psdatalib.psdata.RecordDefinition;
-import com.powersurgepub.psdatalib.psdata.XMLParser3;
-import com.powersurgepub.psdatalib.psdata.DataDictionary;
-import com.powersurgepub.psdatalib.psdata.DataRecord;
-import com.powersurgepub.psdatalib.psdata.DataSource;
-import com.powersurgepub.psdatalib.psdata.DataStore;
+  import com.powersurgepub.psdatalib.pstags.*;
+  import com.powersurgepub.psdatalib.txbio.*;
+  import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psutils.*;
-  import com.powersurgepub.regcodes.*;
   import com.powersurgepub.twodue.*;
   import com.powersurgepub.twodue.disk.*;
   import com.powersurgepub.xos2.*;
@@ -25,24 +33,7 @@ import com.powersurgepub.psdatalib.psdata.DataStore;
    A collection of to do items. New items are added to the end of the
    table. Deleted records are flagged as deleted, but are not removed
    from the table. An index pointing to an item in the table should always
-   point to the same item (it should not move).<p>
-  
-   This code is copyright (c) 2003 by Herb Bowie.
-   All rights reserved. <p>
-  
-   Version History: <ul><li>
-    2003/11/09 - Originally written.
-       </ul>
-  
-   @author Herb Bowie (<a href="mailto:herb@powersurgepub.com">
-           herb@powersurgepub.com</a>)<br>
-           of PowerSurge Publishing 
-           (<a href="http://www.powersurgepub.com">
-           www.powersurgepub.com</a>)
-  
-   @version 
-    2004/06/27 - Added code to check item recurrence on an item add, 
-                 in case the item is closed.
+   point to the same item (it should not move).
  */
 
 public class ToDoItems 
@@ -74,8 +65,6 @@ public class ToDoItems
 	private TagsModel       tagsModel = new TagsModel();
   
   private TwoDueCommon    td;
-  
-  private RegisterWindow  registerWindow = null;
 
 	/**
 	   Constructor with minimal arguments.
@@ -89,7 +78,6 @@ public class ToDoItems
 		items = new ArrayList();
     views = new ArrayList();
     tagsList.registerValue("");
-    registerWindow = RegisterWindow.getShared();
 	}
   
 	/**
@@ -102,7 +90,7 @@ public class ToDoItems
 	 */
 	public ToDoItems (IDListHeader header, DateFormat fmt, TwoDueCommon td, 
       DataSource items) 
-        throws IOException, RegistrationException {
+        throws IOException {
     this.td = td;
     recDef = ToDoItem.getRecDef();
     this.items = new ArrayList();
@@ -140,7 +128,7 @@ public class ToDoItems
     @param  items A collection of items to be added to this collection.
    */
   public boolean addAll (DateFormat fmt, DataSource items) 
-      throws IOException, RegistrationException {
+      throws IOException {
     boolean ok = true;
     DataRecord next;
     int added = 0;
@@ -152,8 +140,7 @@ public class ToDoItems
       xmlParser = (XMLParser3)items;
     } 
     
-    while ((! items.isAtEnd())
-        && (roomForMore())) {
+    while (! items.isAtEnd()) {
       next = items.nextRecordIn();
       // System.out.println ("ToDoItems.addAll size = "
       //     + String.valueOf(size())
@@ -177,7 +164,7 @@ public class ToDoItems
     if (! items.isAtEnd()) {
       next = items.nextRecordIn();
       if (next != null) {
-        throw new RegistrationException ("Some Records Skipped");
+
       }
     }
     Logger.getShared().recordEvent(LogEvent.NORMAL, 
@@ -192,8 +179,7 @@ public class ToDoItems
     
     @param item The item to be added to the collection.
    */
-  public int add (ToDoItem item) 
-      throws RegistrationException {
+  public int add (ToDoItem item) {
     // System.out.println ("ToDoItems.add size = "
     //       + String.valueOf(size())
     //       + " roomForMore = " + String.valueOf(roomForMore()));
@@ -201,53 +187,35 @@ public class ToDoItems
       System.out.println("Tried to add item with blank title");
       return -1;
     } else {
-      if (roomForMore()) {
-        // Don't need to actually add the newItem, but need to go 
-        // through the motions in order to get a valid status in
-        // case the user is adding an item with a closed status.
-        ToDoItem newItem = item.recurIfClosed();
-        boolean ok = items.add (item);
-        if (ok) {
-          int index = items.size() - 1;
-          item.setItemNumber (index);
-          item.setCommon (td);
+      ToDoItem newItem = item.recurIfClosed();
+      boolean ok = items.add (item);
+      if (ok) {
+        int index = items.size() - 1;
+        item.setItemNumber (index);
+        item.setCommon (td);
 
-          tagsList.add  (item);
-          tagsModel.add (item);
+        tagsList.add  (item);
+        tagsModel.add (item);
 
-          // Update Views
-          for (int v = 0; v < views.size(); v++) {
-            ItemsView view = (ItemsView)views.get(v);
-            view.add (item);
-          }
-          return index;
-        } else {
-          // Collection add failed
-          return -1;
+        // Update Views
+        for (int v = 0; v < views.size(); v++) {
+          ItemsView view = (ItemsView)views.get(v);
+          view.add (item);
         }
+        return index;
       } else {
-        // Too many recs for unregistered user
-        throw new RegistrationException ("Maximum Number of Records Reached");
+        // Collection add failed
+        return -1;
       }
-    }
+    } 
   } // end method
-  
-  /**
-   Can more records/items be added without exceeding the demo limitation?
-
-   @return     True if more can be added, false if we've hit the ceiling.
-   */
-  public boolean roomForMore() {
-    return registerWindow.roomForMore(size());
-  }
   
   /**
     Indicates that an item in the list has been modified.
     
     @param item The item being modified.
    */
-  public void modify (ToDoItem item) 
-      throws RegistrationException {
+  public void modify (ToDoItem item) {
     ToDoItem newItem = item.recurIfClosed();
     tagsList.modify  (item);
 		tagsModel.modify (item);
