@@ -313,4 +313,4 @@ Two Due's fields and features can be combined in a variety of creative ways. Fol
 [osd]:				http://opensource.org/osd
 [gnu]:        http://www.gnu.org/licenses/
 [apache]:			http://www.apache.org/licenses/LICENSE-2.0.html
-[mozilla]: http://www.mozilla.org/MPL/2.0/
+[mozilla]:    http://www.mozilla.org/MPL/2.0/
