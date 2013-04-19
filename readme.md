@@ -47,7 +47,7 @@ Source code for Saxon is available at
 Rights
 ------ 
 
-### PSTextMerge 
+### Two Due 
 
 Copyright 1999 - 2013 Herb Bowie
 
