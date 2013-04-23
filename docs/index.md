@@ -1,7 +1,7 @@
 Two Due User Guide
 ==================
 
-<ul>
+<ul id="toc-div">
 	<li><a href="#intro">Introduction</a></li>
   <li><a href="#sysrqmts">System Requirements</a></li>
   <li><a href="#rights">Rights</a></li>

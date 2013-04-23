@@ -4415,7 +4415,7 @@
       New Task Appears in List View but Not in Tree View
     </title>
     <description>
-      I may have found a small bug - not sure - loaded a new task in and it appeared in the list view but not the tree view.‚àö√Æ‚àö‚àè≈í¬© did not appear until I shut down the program and re-started.
+      I may have found a small bug - not sure - loaded a new task in and it appeared in the list view but not the tree view.‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬© did not appear until I shut down the program and re-started.
     </description>
     <outcome>
       Corrected some bugs affecting updating of Categories and the Tree Tab.
@@ -4587,7 +4587,7 @@
       Add Status of Pending or Waiting on Someone Else
     </title>
     <description>
-      add a status of &apos;Pending&apos; or &apos;Waiting on Someone Else&apos;?‚àö√Æ‚àö‚àè≈í¬©‚àö√Æ‚àö‚àè≈í¬© I find a lot of times I am waiting on someone to do something before I can complete the task‚àö√Æ‚àö‚àè≈í¬© (phone call for example if I have to leave a message)
+      add a status of &apos;Pending&apos; or &apos;Waiting on Someone Else&apos;?‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬©‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬© I find a lot of times I am waiting on someone to do something before I can complete the task‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬© (phone call for example if I have to leave a message)
     </description>
     <outcome>
       Added a new item status value of Pending, to indicate that the task is waiting on someone else to take some action.
@@ -4673,7 +4673,7 @@
       Make Date format variable
     </title>
     <description>
-      Just noticed one more thing - I live in the UK (most of the time) and the date format for due date is mm/dd/yyyy which is standard in the US.‚àö√Æ‚àö‚àè≈í¬© However most countries seem to use dd/mm/yyyy - I don&apos;t know whether the program picks up date settings from the operating system.‚àö√Æ‚àö‚àè≈í¬© It does not bother me much since I am used to US date formats, but ohter may find it a hinderance to using the product
+      Just noticed one more thing - I live in the UK (most of the time) and the date format for due date is mm/dd/yyyy which is standard in the US.‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬© However most countries seem to use dd/mm/yyyy - I don&apos;t know whether the program picks up date settings from the operating system.‚Äö√†√∂‚àö√Ü‚Äö√†√∂‚Äö√†√®‚âà√≠¬¨¬© It does not bother me much since I am used to US date formats, but ohter may find it a hinderance to using the product
     </description>
     <outcome>
       
@@ -12902,7 +12902,7 @@
       
     </Tag5>
     <duedate>
-      04/18/2013
+      04/23/2013
     </duedate>
     <starttime>
       00:00 AM
@@ -12950,7 +12950,7 @@
       -1
     </recurswithinmonth>
     <duedateymd>
-      2013-04-18
+      2013-04-23
     </duedateymd>
     <type>
       Action

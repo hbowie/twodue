@@ -1,0 +1,44 @@
+<<delims <% %> <$ $> & >>
+<%output "Bookmarks Template.xbel"%>
+<<output "Bookmarks.xbel">>
+<?xml version="1.0"?>
+<!DOCTYPE xbel>
+<!-- Created by Two Due - http://www.powersurgepub.com -->
+<xbel version="1.0">
+<<nextrec>>
+<<definegroup 1 "<<category1>>">>
+<<definegroup 2 "<<category2>>">>
+<<definegroup 3 "<<category3>>">>
+<<definegroup 4 "<<category4>>">>
+<<definegroup 5 "<<category5>>">>
+<<ifendgroup 5>>
+          </folder>
+<<ifendgroup 4>>
+        </folder>
+<<ifendgroup 3>>
+      </folder>
+<<ifendgroup 2>>
+    </folder>
+<<ifendgroup 1>>
+  </folder>
+<<ifnewgroup 1>>
+  <folder folded="yes">
+    <title><<category1&x>></title>
+<<ifnewgroup 2>>
+    <folder folded="yes">
+      <title><<category2&x>></title>
+<<ifnewgroup 3>>
+      <folder folded="yes">
+        <title><<category3&x>></title>
+<<ifnewgroup 4>>
+        <folder folded="yes">
+          <title><<category4&x>></title>
+<<ifnewgroup 5>>
+          <folder folded="yes">
+            <title><<category5&x>></title>
+<<endif>>
+              <bookmark href="<<webpage&x>>">
+                <title><<title&x>></title>
+              </bookmark>
+<<loop>>
+</xbel>

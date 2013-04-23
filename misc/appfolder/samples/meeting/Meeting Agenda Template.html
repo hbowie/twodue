@@ -1,0 +1,151 @@
+<<output "Meeting Agenda.html">>
+<html>
+<head>
+
+<title>Meeting Agenda and Minutes</title>
+
+<style type="text/css">
+body{font-family:arial, sans-serif, serif;}
+
+td {font-family:arial, sans-serif, serif; size:10px;}
+
+.makeBold{font-family:arial, sans-serif, serif; font-weight:bold;}
+
+.makeCenter{font-family:arial, sans-serif, serif; text-align:center;}
+
+.makeSmall{font-family:arial, sans-serif, serif; font-size:10pt;}
+
+.makeBigBold{font-family:arial, sans-serif, serif; font-weight:bold; font-size:16pt;}
+
+.makeMediumBold{font-family:arial, sans-serif, serif; font-weight:bold; font-size:13pt;}
+
+td.sectionHeader{font-family:arial, sans-serif, serif; font-weight:bold; text-align:center;}
+
+td.sectionHeaderBig{font-family:arial, sans-serif, serif; font-size:16pt; font-weight:bold; text-align:center;}
+
+.managerNameLink{font-family:arial, sans-serif, serif; font-weight:bold; font-size:14pt;}
+
+tr.blueBar{background-color:000099;}
+
+a.footerLinks{color:FFFFFF; font-weight:bold;}
+
+td.maintained{font-size:9pt;}
+
+/*
+ * Table definitions.
+ */
+table.shaded {
+  /* background-color: #69C08A; */
+  background-color: #AABADD;
+  /* background-color: #BFB2D3; */
+}
+
+td.major {
+  background-color: #A4D4B0;
+  font-family: arial, sans-serif, serif;
+  font-size:16pt;
+  font-weight:bold;
+  vertical-align: top;
+}
+
+td.minor {
+  background-color: #BEDFC4;
+  font-family: arial, sans-serif, serif;
+  font-size: 10pt;
+  font-weight:bold;
+  vertical-align: top;
+}
+
+td.head {
+  background-color: #D5E9D7;
+  font-family: arial, sans-serif, serif;
+  font-size: 10pt;
+  font-weight:bold;
+  vertical-align: top;
+}
+
+td.detail {
+  background-color: #EBF4EA;
+  font-family: arial, sans-serif, serif;
+  font-size: 10pt;
+  vertical-align: top;
+}
+
+td.detailBold {
+  background-color: #EBF4EA;
+  font-family: arial, sans-serif, serif;
+  font-size: 10pt;
+  font-weight: 600;
+  vertical-align: top;
+}
+
+</style>
+</head>
+<h1>Meeting Agenda</h1>
+<br>
+
+<table class=shaded border=0 cellpadding=4 cellspacing=3 width="100%">
+<<nextrec>>
+<<definegroup 1 "<<status>>">>
+<<definegroup 2 "<<duedate>>">>
+<<ifendgroup 2>>
+<<ifendgroup 1>>
+<<ifnewgroup 1>>
+  <tr>
+    <td class=major colspan=3>
+<<if "<<status>>" lt 5>>
+      Agendas for Upcoming Meetings
+<<endif>>
+<<if "<<status>>" ge 5>>
+      Minutes from Past Meetings
+<<endif>>
+    </td>
+  </tr>
+<<ifnewgroup 2>>
+  <tr>
+    <td class=minor colspan=3>
+      Staff Meeting on <<duedate>>
+    </td>
+  </tr>
+  <tr>
+    <td width="15%" class=head>
+      Time
+    </td>
+    <td width="25%" class=head>
+      Assigned To
+    </td>
+    <td width="60%" class=head>
+      Agenda Item
+    </td>
+  </tr>
+<<endif>>
+  <tr>
+    <td class=detail>
+      <<starttime>>
+    </td>
+    <td class=detail>
+      <<assignedto>>
+    </td>
+    <td class=detail>
+<<if "<<webpage>>">>
+      <a href="<<webpage>>">
+<<endif>>
+        <<title>>
+<<if "<<webpage>>">>
+      </a>
+<<endif>>
+<<if "<<description>>">>
+      <br>Description: <<description>>
+<<endif>>
+<<if "<<outcome>>">>
+      <br>Outcome: <<outcome>>
+<<endif>>
+    </td>
+  </tr>
+<<loop>>
+</table>
+
+<p>Last Updated: <<today&MM-dd-yyyy>></p>
+
+</body>
+</html>

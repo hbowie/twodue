@@ -1,0 +1,60 @@
+<<output "Bookmarks by Category with Bullets.html">>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Bookmarks by Category</title>
+</head>
+
+<body>
+
+<h1>Bookmarks by Category</h1>
+
+<ul>
+<<nextrec>>
+<<definegroup 1 "<<category1>>">>
+<<definegroup 2 "<<category2>>">>
+<<definegroup 3 "<<category3>>">>
+<<definegroup 4 "<<category4>>">>
+<<definegroup 5 "<<category5>>">>
+<<ifendgroup 5>>
+        </ul>
+<<ifendgroup 4>>
+      </ul>
+<<ifendgroup 3>>
+    </ul>
+<<ifendgroup 2>>
+  </ul>
+<<ifendgroup 1>>
+</ul>
+
+
+<<ifnewgroup 1>>
+  <li><<category1>>
+    <ul>
+<<ifnewgroup 2>>
+    <li><<category2>>
+      <ul>
+<<ifnewgroup 3>>
+      <li><<category3>>
+        <ul>
+<<ifnewgroup 4>>
+        <li><<category4>>
+          <ul>
+<<ifnewgroup 5>>
+          <li><<category5>>
+            <ul>
+<<endif>>
+<li>
+<<if "<<webpage>>">>
+  <a href="<<webpage>>">
+<<endif>>
+<<title>>
+<<if "<<webpage>>">>
+  </a>
+<<endif>>
+<<loop>>
+</body>
+</html>

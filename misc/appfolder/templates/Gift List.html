@@ -1,0 +1,57 @@
+<<delims <% %> <$ $> & >>
+<%output "Gift List Template.html"%>
+<<output "Gift List.html">>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Gift Wish Lists</title>
+  <style type="text/css">
+    table { background-color: #66CC99; }
+    td    { background-color: white;
+            font-family: Arial, Geneva, sans-serif}
+  </style>
+</head>
+<body>
+
+<h2>Gift Wish Lists</h2>
+
+<table summary="To Do Items" border=0 width="100%" cellspacing=4 cellpadding=4>
+<<nextrec>>
+<<definegroup 1 "<<assignedto>>">>
+<<ifendgroup 1>>
+<<ifnewgroup 1>>
+  <tr>
+    <td colspan=4><b>Wish List for <<assignedto>></b></td>
+  </tr>
+  <tr>
+    <th width="10%">Priority</th>
+    <th width="10%">Price</th>
+    <th width="20%">Category</th>
+    <th width="60%">Title</th>
+  </tr>
+<<endif>>
+<<if <<status>> lt 5>>
+  <tr>
+    <td><<priority>></td>
+    <td><<sequence>></td>
+    <td><<category>></td>
+    <td>
+<<if "<<webpage>>">>
+      <a href="<<webpage>>">
+<<endif>>
+        <<title>>
+<<if "<<webpage>>">>
+      </a>
+<<endif>>
+<<if "<<description>>">>
+        <br><<description>>
+<<endif>>
+    </td>
+  </tr>
+<<endif>>
+<<loop>>
+</table>
+</body>
+</html>

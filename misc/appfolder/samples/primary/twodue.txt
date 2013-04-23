@@ -1,0 +1,5 @@
+duedate	priority	status	assignedto	sequence	title	description	outcome	webpage	recursunit	recursevery	recursdayofweek	recurswithinmonth
+11/04/2003	3	0	Herb		Pick up dry cleaning				NA	0	-1	-1
+11/07/2003	1	9	Herb	1.2	Create Data Samples for Two Due	Create some sample data to ship along with Two Due.	Created a sample data file and some sample Web Publishing templates to be included with the Two Due installation.		NA	0	-1	-1
+11/07/2003	3	0			Check for new version of Two Due			http://www.powersurgepub.com	NA	0	-1	-1
+12/31/2050	3	0			Add ability to merge two files together	Add the ability to merge a second To Do file into an existing one.			NA	0	-1	-1

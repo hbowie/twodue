@@ -1,0 +1,24 @@
+<<output "azgifted.rss">>
+<?xml version="1.0"?>
+<rss version="2.0">
+   <channel>
+      <title>AZgifted News</title>
+      <link>http://www.azgifted.org/</link>
+      <description>Support Site for Gifted and Talented Youth in Arizona</description>
+      <language>en-us</language>
+      <pubDate><<today&EEE, dd MMM yyyy HH:mm:ss zzz>></pubDate>
+      <lastBuildDate><<today&EEE, dd MMM yyyy HH:mm:ss zzz>></lastBuildDate>
+      <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+      <generator>Two Due</generator>
+      <managingEditor>hbowie@mindspring.com</managingEditor>
+      <webMaster>hbowie@mindspring.com</webMaster>
+<<nextrec>>
+      <item>
+         <title><<title&x>></title>
+         <link><<webpage&x>></link>
+         <description><<description&x>></description>
+         <pubDate><<duedate&EEE, dd MMM yyyy HH:mm:ss zzz>></pubDate>
+      </item>
+<<loop>>
+   </channel>
+</rss>

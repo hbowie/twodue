@@ -1,0 +1,11 @@
+category	category1	category2	category3	category4	category5	duedate	starttime	duration	alertprior	priority	status	assignedto	sequence	title	description	outcome	webpage	recursunit	recursevery	recursdayofweek	recurswithinmonth
+20 - Steering Team	20 - Steering Team					02/19/2004	2:00 PM	N/A	N/A	3	0	Kube, Brian	20	SEPI Steering Team Meeting No. 2				Months	1	5	3
+50 - Flowdown	50 - Flowdown					02/12/2004	2:00 PM	0:10	N/A	3	0	Bowie, Herb	50	Flowdown.				Weeks	1	-1	-1
+50 - Flowdown	50 - Flowdown					02/12/2004	2:10 PM	0:05	N/A	3	0	Bowie, Herb	51	Check the folder				Weeks	1	-1	-1
+						11/27/2004	2:00 PM	N/A	N/A	3	0	Bowie, Herb	60	Holiday Celebrations?	Should we have an Applications Holiday party? For my staff? Lunch? Dinner?	12/9 5:30 at Old Tortilla Factory in Scottsdale. Outside or inside? IT Pot Luck scheduled for 12/16. Site Lunch scheduled for 12/18.		Years	1	-1	3
+60 - General Staff	60 - General Staff					02/12/2004	2:15 PM	0:20	N/A	3	0	Bowie, Herb	67	Go around the table.				Weeks	1	-1	-1
+70 - Management Only	70 - Management Only					02/12/2004	2:35 PM	0:10	N/A	3	0	Management Team	70	2004 Staffing Planning		Paul to open 2 contractor reqs: one for Web/CF, one for Oracle Forms.		Weeks	1	-1	-1
+50 - Flowdown	50 - Flowdown					02/10/2004	2:00 PM	0:05	N/A	3	0	Bowie, Herb	52	Check the folder				Weeks	1	-1	-1
+60 - General Staff	60 - General Staff					02/10/2004	2:05 PM	0:20	N/A	3	0	Bowie, Herb	64	Go Around The Table				Weeks	1	-1	-1
+50 - Flowdown	50 - Flowdown					02/26/2004	2:00 PM	N/A	N/A	3	0	Bowie, Herb	60	Roundtable feedback				Months	1	5	4
+						03/02/2004	2:00 PM	N/A	N/A	3	0	Bowie, Herb	61	Review Training Progress	Priority 1 and Hours by Employee			Months	3	-1	1

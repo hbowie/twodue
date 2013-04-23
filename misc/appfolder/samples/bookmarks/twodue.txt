@@ -1,0 +1,11 @@
+category	category1	category2	category3	category4	category5	duedate	starttime	duration	alertprior	priority	status	assignedto	sequence	title	description	outcome	webpage	recursunit	recursevery	recursdayofweek	recurswithinmonth
+Arizona.Activities	Arizona	Activities				 	12:00 AM	N/A	N/A	2	0			Canine Hiking Club of Arizona Yahoo Groups			http://groups.yahoo.com/group/caninehikingclubofaz/	NA	0	-1	-1
+Arizona.Activities	Arizona	Activities				 	12:00 AM	N/A	N/A	3	0			www.farrellis.com			http://www.farrellis.com/	NA	0	-1	-1
+Arizona.Activities	Arizona	Activities				 	12:00 AM	N/A	N/A	3	0			Yahoo! Movies			http://movies.yahoo.com/	NA	0	-1	-1
+Arts & Letters	Arts & Letters					 	12:00 AM	N/A	N/A	2	0			Arts & Letters Daily			http://aldaily.com/	NA	0	-1	-1
+Books	Books					 	12:00 AM	N/A	N/A	2	0			Book Crossing	"Encourages, facilitates book trading"		http://bookcrossing.com/	NA	0	-1	-1
+Books	Books					 	12:00 AM	N/A	N/A	3	0			Books America			http://www.booksamerica.com/	NA	0	-1	-1
+Books	Books					 	12:00 AM	N/A	N/A	3	0			Business-America.Com			http://www.business-america.com/	NA	0	-1	-1
+Books.Clubs	Books	Clubs				 	12:00 AM	N/A	N/A	3	0			Welcome to Book-of-the-Month Club Online!			http://www.bomc.com/	NA	0	-1	-1
+Books.Publishing.Associations	Books	Publishing	Associations			 	12:00 AM	N/A	N/A	3	0			Arizona Book Publishing Association: helping bo&hellip;			http://www.bookzone.com/AZPublishing/	NA	0	-1	-1
+Books.Publishing.Associations	Books	Publishing	Associations			 	12:00 AM	N/A	N/A	3	0			Publisher&rsquo;s Marketing Association			http://www.pma-online.org	NA	0	-1	-1

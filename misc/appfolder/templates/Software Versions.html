@@ -1,0 +1,31 @@
+<<delims <% %> <$ $> & >>
+<%output "Software Versions Template.html"%>
+<<output "Software Versions.html">>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Software Versions</title>
+</head>
+
+<body>
+
+<h1>Software Versions</h1>
+
+<<nextrec>>
+<<definegroup 1 "<<sequence>>">>
+<<ifendgroup 1>>
+</ol>
+<<ifnewgroup 1>>
+<h3>Version <<sequence>> </h3>
+<ol>
+<<endif>>
+<<if <<status>> gt 5>>
+<li> <<outcome>>
+<<endif>>
+<<loop>>
+</body>
+</html>
+
