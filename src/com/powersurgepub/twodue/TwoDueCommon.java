@@ -16,11 +16,11 @@
 
 package com.powersurgepub.twodue;
 
+import com.powersurgepub.pstextio.TextBlock;
   import com.powersurgepub.psdatalib.elements.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psdatalib.tabdelim.*;
-  import com.powersurgepub.psdatalib.pstextio.*;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psfiles.*;
