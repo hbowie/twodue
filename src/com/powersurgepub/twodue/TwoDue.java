@@ -638,7 +638,7 @@ public class TwoDue
     });
     navToolBar.add(itemNewButton);
 
-    itemDeleteButton.setText("Ð");
+    itemDeleteButton.setText("-");
     itemDeleteButton.setMaximumSize(new java.awt.Dimension(60, 30));
     itemDeleteButton.setMinimumSize(new java.awt.Dimension(30, 26));
     itemDeleteButton.setPreferredSize(new java.awt.Dimension(40, 28));

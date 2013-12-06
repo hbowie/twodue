@@ -16,7 +16,7 @@
 
 package com.powersurgepub.twodue;
 
-import com.powersurgepub.pstextio.TextBlock;
+  import com.powersurgepub.pstextio.*;
   import com.powersurgepub.psdatalib.elements.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psdatalib.txbio.*;
@@ -417,7 +417,6 @@ public class TwoDueCommon
     
     aboutWindow = new AboutWindow (
       false,   // loadFromDisk
-      true,    // browserLauncher2Used
       true,    // jxlUsed
       true,    // pegdownUsed
       true,    // xerces used
