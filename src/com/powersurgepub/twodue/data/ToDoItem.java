@@ -16,7 +16,7 @@
 
 package com.powersurgepub.twodue.data;
 
-import com.powersurgepub.pstextio.TextBlock;
+  import com.powersurgepub.pstextio.*;
   import com.powersurgepub.psdatalib.elements.*;
   import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.psdata.*;
