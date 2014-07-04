@@ -310,13 +310,13 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="recordPasteNewMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Accept"/>
+                <Property name="text" type="java.lang.String" value="Update"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="recordPasteNewMenuItemActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="recordPasteNewMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_P,&#xa;        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="recordPasteNewMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_U,&#xa;        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>

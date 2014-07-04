@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 Herb Bowie
+ * Copyright 2003 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1109,8 +1109,8 @@ recordCopyMenuItem.addActionListener(new java.awt.event.ActionListener() {
   });
   recordMenu.add(recordCopyMenuItem);
 
-  recordPasteNewMenuItem.setText("Accept");
-  recordPasteNewMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_P,
+  recordPasteNewMenuItem.setText("Update");
+  recordPasteNewMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_U,
     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 recordPasteNewMenuItem.addActionListener(new java.awt.event.ActionListener() {
   public void actionPerformed(java.awt.event.ActionEvent evt) {

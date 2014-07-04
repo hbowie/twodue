@@ -344,7 +344,7 @@ public class TwoDueCommon
     tabs1.addTab("List", listTab);
     
     treeTab = new CategoryTab (this);
-    tabs1.addTab("Tree", treeTab);
+    tabs1.addTab("Tags", treeTab);
     
     itemTab = new ItemTab (this);
     itemTab.setDueDateIcons (lateIcon, todayIcon, tomorrowIcon, futureIcon);

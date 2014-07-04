@@ -558,8 +558,3 @@
 
     First pre-release of program for beta testing.
 
-
-
-
-
-
