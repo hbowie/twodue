@@ -128,19 +128,6 @@ public class TwoDue
 
     // td.frame = this;
     td.autoSaveTimer = autoSaveTimer;
-    try {
-      userGuideURL = new URL (td.pageURL, USER_GUIDE);
-    } catch (MalformedURLException e) {
-    }
-    try {
-      quickStartURL = new URL (td.pageURL, td.QUICK_START);
-    } catch (MalformedURLException e) {
-    }
-    try {
-      programHistoryURL = new URL (td.pageURL, PROGRAM_HISTORY);
-    } catch (MalformedURLException e) {
-    }
-    // userGuide = "file:/" + System.getProperty (GlobalConstants.USER_DIR) + USER_GUIDE;
     shortcutKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     
     // navToolBar.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -150,7 +137,9 @@ public class TwoDue
         td.userPrefs.getPrefAsInt (td.TOP,  40),
         td.userPrefs.getPrefAsInt (td.WIDTH, 620),
         td.userPrefs.getPrefAsInt (td.HEIGHT, 540));
-    xos.setHelpMenuItem (helpUserGuideMenuItem);
+    home.setHelpMenu(this, helpMenu);
+    xos.setHelpMenu(helpMenu);
+    xos.setHelpMenuItem (home.getHelpMenuItem());
     td.editMenu = editMenu;
     td.fileNameLabel = fileNameLabel;
     td.indexLabel = indexLabel;
@@ -192,7 +181,6 @@ public class TwoDue
     
     // Set About, Quit and other Handlers in platform-specific ways
     xos.setFileMenu (fileMenu);
-    xos.setHelpMenu (helpMenu);
     xos.setXHandler (this);
     xos.setMainWindow (this);
     xos.enablePreferences();
@@ -599,12 +587,6 @@ public class TwoDue
     optionsMenuItem = new javax.swing.JMenuItem();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
-    helpHistoryMenuItem = new javax.swing.JMenuItem();
-    helpUserGuideMenuItem = new javax.swing.JMenuItem();
-    helpWebSeparator = new javax.swing.JSeparator();
-    helpHomePageMenuItem = new javax.swing.JMenuItem();
-    helpMiscSeparator = new javax.swing.JSeparator();
-    helpReduceWindowSizeMenuItem = new javax.swing.JMenuItem();
 
     setTitle("Two Due");
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1201,43 +1183,6 @@ tabsRecursMenuItem.addActionListener(new java.awt.event.ActionListener() {
   mainMenuBar.add(windowMenu);
 
   helpMenu.setText("Help");
-
-  helpHistoryMenuItem.setText("Program History");
-  helpHistoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpHistoryMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpHistoryMenuItem);
-
-  helpUserGuideMenuItem.setText("User Guide");
-  helpUserGuideMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpUserGuideMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpUserGuideMenuItem);
-  helpMenu.add(helpWebSeparator);
-
-  helpHomePageMenuItem.setText("Two Due Home Page");
-  helpHomePageMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpHomePageMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpHomePageMenuItem);
-  helpMenu.add(helpMiscSeparator);
-
-  helpReduceWindowSizeMenuItem.setText("Reduce Window Size");
-  helpReduceWindowSizeMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W,
-    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-  public void actionPerformed(java.awt.event.ActionEvent evt) {
-    helpReduceWindowSizeMenuItemActionPerformed(evt);
-  }
-  });
-  helpMenu.add(helpReduceWindowSizeMenuItem);
-
   mainMenuBar.add(helpMenu);
 
   setJMenuBar(mainMenuBar);
@@ -1277,11 +1222,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     findItem();
   }//GEN-LAST:event_findTextActionPerformed
 
-    private void helpReduceWindowSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpReduceWindowSizeMenuItemActionPerformed
-      setBounds (40, 40, 400, 540);
-      pack();
-    }//GEN-LAST:event_helpReduceWindowSizeMenuItemActionPerformed
-
   private void recordEditDateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordEditDateMenuItemActionPerformed
     td.editDueDate();
   }//GEN-LAST:event_recordEditDateMenuItemActionPerformed
@@ -1311,10 +1251,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private void recordCopyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordCopyMenuItemActionPerformed
     td.itemCopy();
   }//GEN-LAST:event_recordCopyMenuItemActionPerformed
-
-  private void helpHistoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHistoryMenuItemActionPerformed
-    td.openURL (programHistoryURL);
-  }//GEN-LAST:event_helpHistoryMenuItemActionPerformed
 
   private void tabsRecursMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tabsRecursMenuItemActionPerformed
     td.activateRecursTab();
@@ -1406,14 +1342,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private void recordNewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordNewMenuItemActionPerformed
     newItem();
   }//GEN-LAST:event_recordNewMenuItemActionPerformed
-
-  private void helpUserGuideMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpUserGuideMenuItemActionPerformed
-    td.openURL (userGuideURL);
-  }//GEN-LAST:event_helpUserGuideMenuItemActionPerformed
-
-  private void helpHomePageMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHomePageMenuItemActionPerformed
-    td.openURL (HOME_PAGE);
-  }//GEN-LAST:event_helpHomePageMenuItemActionPerformed
 
   private void itemDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemDeleteButtonActionPerformed
     deleteItem();
@@ -1510,13 +1438,7 @@ private void folderSyncMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
   private javax.swing.JPanel footerPanel;
   private javax.swing.JLabel fullSizeLabel;
   private javax.swing.JLabel fullSizeSpacerLabel;
-  private javax.swing.JMenuItem helpHistoryMenuItem;
-  private javax.swing.JMenuItem helpHomePageMenuItem;
   private javax.swing.JMenu helpMenu;
-  private javax.swing.JSeparator helpMiscSeparator;
-  private javax.swing.JMenuItem helpReduceWindowSizeMenuItem;
-  private javax.swing.JMenuItem helpUserGuideMenuItem;
-  private javax.swing.JSeparator helpWebSeparator;
   private javax.swing.JLabel indexLabel;
   private javax.swing.JButton itemDeleteButton;
   private javax.swing.JButton itemDoneButton;
