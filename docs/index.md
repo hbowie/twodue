@@ -476,6 +476,8 @@ The following commands are available. Note that the first two commands open loca
 
 * **Reduce Window Size** -- Restores the main Two Due window to its default size and location. Note that this command has a shortcut so that it may be executed even when the Two Due window is not visible. This command may sometimes prove useful if you use multiple monitors, but occasionally in different configurations. On Windows in particular, this sometimes results in Two Due opening on a monitor that is no longer present, making it difficult to see.
 
+
+
 [java]:       http://www.java.com/
 [pspub]:      http://www.powersurgepub.com/
 [downloads]:  http://www.powersurgepub.com/downloads.html
