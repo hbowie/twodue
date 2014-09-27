@@ -16,7 +16,6 @@
 
 package com.powersurgepub.twodue;
 
-import com.powersurgepub.psdatalib.txbio.MetaMarkdownReader;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psutils.*;
