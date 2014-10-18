@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 - 2013 Herb Bowie
+ * Copyright 2007 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.powersurgepub.twodue;
 
   import com.powersurgepub.psfiles.*;
+  import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.twodue.data.*;
@@ -41,7 +42,8 @@ public class PrefsWindow extends javax.swing.JFrame {
   private CommonPrefs       commonPrefs;
   private DisplayPrefs      displayPrefs;
   private ViewPrefs         viewPrefs;
-  private FilePrefs       backupPrefs;
+  private FilePrefs         backupPrefs;
+  private TagsPrefs         tagsPrefs;
   
   /** Creates new form PrefsWindow */
   public PrefsWindow(TwoDueCommon td) {
@@ -64,6 +66,9 @@ public class PrefsWindow extends javax.swing.JFrame {
     backupPrefs = new FilePrefs (td);
     prefsTabs.addTab ("Backups", backupPrefs);
     
+    tagsPrefs = new TagsPrefs();
+    prefsTabs.addTab ("Tags Export", tagsPrefs);
+    
     setupComplete = true;
   }
   
@@ -77,6 +82,10 @@ public class PrefsWindow extends javax.swing.JFrame {
   
   public FilePrefs getBackupPrefs () {
     return backupPrefs;
+  }
+  
+  public TagsPrefs getTagsPrefs() {
+    return tagsPrefs;
   }
   
   /**
@@ -122,6 +131,7 @@ public class PrefsWindow extends javax.swing.JFrame {
   public void savePrefs() {
     commonPrefs.savePrefs();
     backupPrefs.savePrefs();
+    tagsPrefs.savePrefs();
   }
   
   public void handleQuit() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 Herb Bowie
+ * Copyright 2003 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -447,6 +447,10 @@ public class TwoDueCommon
     // }
   }
   
+  public PrefsWindow getPrefsWindow() {
+    return prefsWindow;
+  }
+  
   public void setSplit (boolean splitPaneHorizontal) {
     int splitOrientation = JSplitPane.VERTICAL_SPLIT;
     if (splitPaneHorizontal) {
@@ -728,6 +732,8 @@ public class TwoDueCommon
     categories = new CategoryList();
     categories.registerValue("");
     items.addView (categories);
+    
+    prefsWindow.getTagsPrefs().setTagsValueList(items.getTagsList());
     
     sorted = new SortedItems 
         (items, diskStore.getComparator(), diskStore.getSelector());
@@ -1661,7 +1667,7 @@ public class TwoDueCommon
       if (nextItem.isDone()) {
         if (archiving) {
           try {
-            archiveNewTDF.nextRecordOut (nextItem.getDataRec(recDef));
+            archiveNewTDF.nextRecordOut (nextItem.getDataRec(recDef, null));
           } catch (IOException e) {
             trouble.report ("Trouble writing to Archive File "
                 + archiveNewFile.toString(), "Archive Problem");
@@ -2196,7 +2202,13 @@ public class TwoDueCommon
       }
       if (diskStore.isAFolder()) {
         try {
-        items.getAllForEachTag(diskStore.getSplitTagsTDF());
+          items.export(diskStore.getExportTDF());
+        } catch (java.io.IOException e) {
+          trouble.report 
+              ("Trouble writing export file", "Export Problem");
+        }
+        try {
+          items.getAllForEachTag(diskStore.getSplitTagsTDF());
         } catch (java.io.IOException e) {
           trouble.report 
               ("Trouble writing split tags file", "Split Tags Problem");

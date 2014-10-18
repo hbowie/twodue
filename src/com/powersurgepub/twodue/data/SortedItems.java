@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 Herb Bowie
+ * Copyright 2003 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -428,7 +428,7 @@ public class SortedItems
       ToDoItem nextItem;
       for (int itemIndex = 0; itemIndex < size(); itemIndex++) {
         nextItem = get (itemIndex);
-        DataRecord nextRec = nextItem.getDataRec (recDef);
+        DataRecord nextRec = nextItem.getDataRec (recDef, null);
         try {
           dataOut.nextRecordOut (nextRec);
         } catch (IOException e2) {
@@ -607,7 +607,7 @@ public class SortedItems
     } else {
       ToDoItem item = get (dsIndex);
       dsIndex++;
-      return item.getDataRec(recDef);
+      return item.getDataRec(recDef, null);
     }
   }
   

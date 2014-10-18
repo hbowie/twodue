@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 Herb Bowie
+ * Copyright 2003 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ public abstract class TwoDueDiskStore {
   public static final String  ITEM_TAG      = "item";
   
   public static final String  SPLIT_TAGS_FILE_NAME = "twodue_split.tab";
+  public static final String  EXPORT_FILE_NAME = "twodue_export.tab";
   
   // public static final String  TWO_DUE_FILE_CREATOR = "2Due";
   // public static final String  TWO_DUE_FILE_CREATOR_HEX = "32447565";
@@ -87,6 +88,12 @@ public abstract class TwoDueDiskStore {
   
   /** The tab-delimited file object for a to do file with one rec per tag. */
   protected TabDelimFile    splitTagsTDF = null;
+  
+  /** The file to be used for an export. */
+  protected File            exportFile = null;
+  
+  /** The tab-delimited file to be used for an export. */
+  protected TabDelimFile    exportTDF = null;
   
   /** The location of the XML file. */
   protected File            toDoFileXML = null;
@@ -427,6 +434,23 @@ public abstract class TwoDueDiskStore {
       splitTagsTDF = new TabDelimFile (splitTagsFile);
       splitTagsTDF.setLog (log);
       return splitTagsTDF;
+    }
+  }
+  
+  /**
+   Get the tab delimited file to contain an export of the collection. 
+  
+   @return A tab delimited file to be used for an export. 
+  */
+  public TabDelimFile getExportTDF() {
+    if (toDoFile == null) {
+      return null;
+    } else {
+      exportFile 
+          = new File (toDoFile.getParentFile(), EXPORT_FILE_NAME);
+      exportTDF = new TabDelimFile (exportFile);
+      exportTDF.setLog (log);
+      return exportTDF;
     }
   }
   

@@ -47,7 +47,7 @@ public class TwoDue
           {
   
   public static final String PROGRAM_NAME = "Two Due";
-  public static final String PROGRAM_VERSION = "3.10";
+  public static final String PROGRAM_VERSION = "3.20";
   
   public static final int    CHILD_WINDOW_X_OFFSET = 60;
   public static final int    CHILD_WINDOW_Y_OFFSET = 60;

@@ -270,7 +270,7 @@ public class ToDoItems
       for (itemIndex = 0; itemIndex < size(); itemIndex++) {
         nextItem = get (itemIndex);
         if (! nextItem.isDeleted()) {
-          DataRecord nextRec = nextItem.getDataRec (recDef);
+          DataRecord nextRec = nextItem.getDataRec (recDef, null);
           try {
             dataOut.nextRecordOut (nextRec);
           } catch (IOException e2) {
@@ -285,15 +285,21 @@ public class ToDoItems
   
   /**
     Gets this collection of items and passes it to a data store, dropping
-    deleted items, and splitting tags.
+    deleted items, selecting on indicated tags, and suppressing indicated tags.
     
     @return True if the items were stored successfully.
     @param items A data store to receive the collection.
    */
-  public boolean getAllForEachTag (DataStore dataOut) 
+  public boolean export (DataStore dataOut) 
       throws IOException {
         
     boolean ok = true;
+    String selectTagsStr 
+        = td.getPrefsWindow().getTagsPrefs().getSelectTagsAsString();
+    String suppressTagsStr 
+        = td.getPrefsWindow().getTagsPrefs().getSuppressTagsAsString();
+    Tags selectTags = new Tags(selectTagsStr);
+    Tags suppressTags = new Tags(suppressTagsStr);
         
     try {
       dataOut.openForOutput (recDef);
@@ -312,15 +318,74 @@ public class ToDoItems
       ToDoItem nextItem;
       for (itemIndex = 0; itemIndex < size(); itemIndex++) {
         nextItem = get (itemIndex);
-        if (! nextItem.isDeleted()) {
-          int tagIndex = 0;
-          DataRecord nextRec = nextItem.getDataRec (recDef, tagIndex);
-          while (nextRec != null) {
+        boolean tagSelected = nextItem.getTags().anyTagFound(selectTags);
+        if (! nextItem.isDeleted() && tagSelected) {
+          DataRecord nextRec = nextItem.getDataRec (recDef, suppressTags);
+          if (nextRec != null) {
             try {
               dataOut.nextRecordOut (nextRec);
             } catch (IOException e2) {
               ok = false;
             }
+            nextRec = nextItem.getDataRec (recDef, suppressTags);
+          } // end while nextRec not null
+        } // end if not deleted
+      } // end for loop
+    } // end if open ok
+    dataOut.close();
+    return ok;
+  } // end getAll method
+  
+  /**
+    Gets this collection of items and passes it to a data store, dropping
+    deleted items, and splitting tags.
+    
+    @return True if the items were stored successfully.
+    @param items A data store to receive the collection.
+   */
+  public boolean getAllForEachTag (DataStore dataOut) 
+      throws IOException {
+        
+    boolean ok = true;
+    String selectTagsStr 
+        = td.getPrefsWindow().getTagsPrefs().getSelectTagsAsString();
+    String suppressTagsStr 
+        = td.getPrefsWindow().getTagsPrefs().getSuppressTagsAsString();
+    Tags selectTags = new Tags(selectTagsStr);
+    Tags suppressTags = new Tags(suppressTagsStr);
+        
+    try {
+      dataOut.openForOutput (recDef);
+    } catch (IOException e) {
+      ok = false;
+    }
+    
+    if (ok) {
+      if (dataOut.getClass().getSimpleName().equals("XMLRecordWriter")) {
+        XMLRecordWriter xmlWriter = (XMLRecordWriter)dataOut;
+        xmlWriter.setRecTag(TwoDueDiskStore.ITEM_TAG);
+      }
+      // Create a date formatter
+      DateFormat fmt = new SimpleDateFormat ("MM/dd/yyyy"); 
+    
+      ToDoItem nextItem;
+      for (itemIndex = 0; itemIndex < size(); itemIndex++) {
+        nextItem = get (itemIndex);
+        boolean tagSelected = nextItem.getTags().anyTagFound(selectTags);
+        if (! nextItem.isDeleted() && tagSelected) {
+          int tagIndex = 0;
+          DataRecord nextRec = nextItem.getDataRec (recDef, tagIndex);
+          while (nextRec != null) {
+            String nextTag = nextRec.getFieldData(ToDoItem.COLUMN_NAME[ToDoItem.TAGS]);
+            if (suppressTags.tagFound(nextTag)) {
+              // Stifle it
+            } else {
+              try {
+                dataOut.nextRecordOut (nextRec);
+              } catch (IOException e2) {
+                ok = false;
+              }
+            } 
             tagIndex++;
             nextRec = nextItem.getDataRec (recDef, tagIndex);
           } // end while nextRec not null
@@ -438,7 +503,7 @@ public class ToDoItems
         dsIndex++;
       } while ((! isAtEnd()) && (item.isDeleted()));
       if (goodRec) {
-        return item.getDataRec(recDef);
+        return item.getDataRec(recDef, null);
       }
     }
     return null;

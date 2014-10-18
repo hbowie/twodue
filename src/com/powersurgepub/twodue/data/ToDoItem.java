@@ -18,8 +18,8 @@ package com.powersurgepub.twodue.data;
 
   import com.powersurgepub.pstextio.*;
   import com.powersurgepub.psdatalib.elements.*;
-  import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.psdata.*;
+  import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.twodue.*;
   import com.powersurgepub.xos2.*;
@@ -920,37 +920,49 @@ public class ToDoItem
    
     @param recDef Record Definition to be used in building the record. 
     */
-  public DataRecord getDataRec (RecordDefinition recDef) {
+  public DataRecord getDataRec (RecordDefinition recDef, Tags suppressTags) {
     DataRecord nextRec = new DataRecord();
-    nextRec.addField (recDef, getTags().toString());
-    for (int i = 0; i < TAGS_MAX; i++) {
-      nextRec.addField (recDef, getTagLevel (i));
+    String cleansedTagsStr;
+    if (suppressTags != null) {
+      cleansedTagsStr = getTags().suppress(suppressTags);
+    } else {
+      cleansedTagsStr = getTags().toString();
     }
-    return addFieldsBeyondTags (recDef, nextRec);
+    nextRec.addField (recDef, cleansedTagsStr);
+    Tags cleansedTags = new Tags (cleansedTagsStr);
+    for (int i = 0; i < TAGS_MAX; i++) {
+      nextRec.addField (recDef, cleansedTags.getTag(i));
+    }
+    return addFieldsBeyondTags (recDef, nextRec, suppressTags);
   }
   
   /**
-    Return this object, formatted as a DataRecord, but with only the 
-    tag at the specified level, instead of all tags.
-   
-    @param recDef Record Definition to be used in building the record. 
-    */
-  public DataRecord getDataRec (RecordDefinition recDef, int tagIndex) {
+   Return this object, formatted as a DataRecord, but with only the 
+   specified tag, instead of all tags.
+  
+   @param recDef       Record Definition to be used in building the record.
+   @param tagIndex     The tag to be used.
+  
+   @return This object, with the specified tag, formatted as a DataRecord. 
+  */
+  public DataRecord getDataRec (
+      RecordDefinition recDef, 
+      int tagIndex) {
     DataRecord nextRec = new DataRecord();
-    String tags = getTags().getTag(tagIndex);
-    if (tags.length() > 0) {
-      nextRec.addField (recDef, tags);
+    String oneTag = getTags().getTag(tagIndex);
+    if (oneTag.length() > 0) {
+      nextRec.addField (recDef, oneTag);
       for (int i = 0; i < TAGS_MAX; i++) {
         nextRec.addField (recDef, getTagLevel (i));
       }
-      return addFieldsBeyondTags (recDef, nextRec);
+      return addFieldsBeyondTags (recDef, nextRec, null);
     } else {
       return null;
     }
   }
   
   private DataRecord addFieldsBeyondTags 
-      (RecordDefinition recDef, DataRecord nextRec) {
+      (RecordDefinition recDef, DataRecord nextRec, Tags suppressTags) {
     DateFormat fmt = new SimpleDateFormat ("MM/dd/yyyy");
     nextRec.addField (recDef, getDueDate (fmt));
     nextRec.addField (recDef, getStartTimeAsString());
@@ -973,7 +985,7 @@ public class ToDoItem
     nextRec.addField (recDef, getFileLengthAsString());
     nextRec.addField (recDef, getLastModDate(fmt));
     nextRec.addField (recDef, getLastModDate (YMD_FORMAT));
-    nextRec.addField (recDef, getLinkedTags("tags/"));
+    nextRec.addField (recDef, getLinkedTags("tags/", suppressTags));
     return nextRec;
   }
   
@@ -1098,8 +1110,15 @@ public class ToDoItem
     return tags.toString();
   }
   
-  public String getLinkedTags (String parent) {
-    return tags.getLinkedTags(parent);
+  public String getLinkedTags (String parent, Tags suppressTags) {
+    String cleansedTagsStr;
+    if (suppressTags != null) {
+      cleansedTagsStr = getTags().suppress(suppressTags);
+    } else {
+      cleansedTagsStr = getTags().toString();
+    }
+    Tags cleansedTags = new Tags (cleansedTagsStr);
+    return cleansedTags.getLinkedTags(parent);
   }
   
   public boolean equalsTags (String tags2) {
