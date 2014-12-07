@@ -16,8 +16,9 @@
 
 package com.powersurgepub.twodue;
 
+  import com.powersurgepub.psdatalib.notenik.*;
   import com.powersurgepub.psdatalib.psdata.*;
-  import com.powersurgepub.psdatalib.txbio.*;
+  // import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.twodue.data.*;
   import com.powersurgepub.twodue.disk.*;
@@ -227,13 +228,17 @@ public class FolderSync
             URL nextUrl = nextFile.toURI().toURL();
             String nextTitle = "";
             String nextCommonTitle = "";
-            boolean markdown = MetaMarkdownReader.isInterestedIn(nextFile);
+            boolean markdown = NoteIO.isInterestedIn(nextFile);
             if (markdown) {
-              MetaMarkdownReader mdReader 
-                  = new MetaMarkdownReader
-                    (nextFile, MetaMarkdownReader.MARKDOWN_TYPE);
-              mdReader.openForInput();
-              nextTitle = mdReader.getTitle();
+              NoteIO noteIO = new NoteIO (nextFile, NoteParms.MARKDOWN_TYPE);
+              // MetaMarkdownReader mdReader 
+              //     = new MetaMarkdownReader
+              //       (nextFile, MetaMarkdownReader.MARKDOWN_TYPE);
+              // noteIO.openForInput();
+              Note note = noteIO.getNote(nextFile, "");
+              // mdReader.openForInput();
+              nextTitle = note.getTitle();
+              // nextTitle = mdReader.getTitle();
               nextCommonTitle = StringUtils.commonName(nextTitle);
             }
             

@@ -47,9 +47,6 @@ To be fair, there are a few things that Two Due is not good at. If these are mor
 </dl>
 
 
-
-
-
 Documentation
 -------------
 

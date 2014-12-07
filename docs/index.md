@@ -165,9 +165,6 @@ To be fair, there are a few things that Two Due is not good at. If these are mor
 </dl>
 
 
-
-
-
 <h2 id="getting-started">Getting Started</h2>
 
 
