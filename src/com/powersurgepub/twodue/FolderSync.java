@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 Herb Bowie
+ * Copyright 2003 - 2015 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package com.powersurgepub.twodue;
 
   import com.powersurgepub.psdatalib.notenik.*;
   import com.powersurgepub.psdatalib.psdata.*;
-  // import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.twodue.data.*;
   import com.powersurgepub.twodue.disk.*;
   import com.powersurgepub.xos2.*;
   import java.io.*;
   import java.net.*;
+  import java.text.*;
   import java.util.*;
   import javax.swing.*;
 
@@ -47,6 +47,7 @@ public class FolderSync
   private TwoDueCommon      td          = null;
   private TwoDueDiskStore   diskStore   = null;
   private ToDoItems         items       = null;
+  private NoteIO            noteIO      = null;
 
   /** Creates new form FolderSync */
   public FolderSync(TwoDueCommon td) {
@@ -205,13 +206,10 @@ public class FolderSync
               && (! nextFile.getName().equals(TwoDueFolder.DISK_DIR_NAME))
               && (! nextFile.getName().equals(TwoDueDiskDirectory.TWO_DUE_FOLDER))
               && (! nextFile.getName().equals(TwoDueFolder.DISK_VIEWS_NAME))) {
-            // System.out.println(" ");
-            // System.out.println("FolderSync   file name = " + nextFile.getName());
             FileName nextFileName = new FileName(nextFile);
             String fileNameBase;
             if (nextFile.isDirectory()) {
               fileNameBase = nextFile.getName();
-              // System.out.println("FolderSync folder name = " + fileNameBase);
               int dotIndex = fileNameBase.lastIndexOf('.');
               if (dotIndex > 0
                   && ((dotIndex + 4) >= fileNameBase.length())) {
@@ -222,7 +220,6 @@ public class FolderSync
             }
             String commonFileName 
                 = StringUtils.commonName(fileNameBase);
-            // System.out.println("FolderSync common name = " + commonFileName);
             String nextFileEnglishName 
                 = nextFileName.getFileOrFolderNameEnglish();
             URL nextUrl = nextFile.toURI().toURL();
@@ -251,7 +248,6 @@ public class FolderSync
               found = (next.getCommonTitle().equals(commonFileName)
                   || next.getCommonTitle().equals(nextCommonTitle));
               if (found) {
-                // System.out.println("FolderSync       match = " + next.getTitle());
                 next.setSynced(true);
                 String nextWebPage = next.getWebPage();
                 if (nextWebPage.length() == 0 
@@ -259,7 +255,6 @@ public class FolderSync
                     || markdown) {
                   if (! next.getWebPage().equals(nextUrl.toString())) {
                     next.setWebPage(nextUrl);
-                    // System.out.println("FolderSync     new url = " + nextUrl.toString());
                   }
                   boolean changedDescription = setDescription(next, nextFile);
                   // Date lastDueDate = next.getDueDate();
@@ -302,7 +297,6 @@ public class FolderSync
               i = items.add (newItem);
               added++;
               msgs.append("Added " + newItem.getTitle() + "\n");
-              // System.out.println ("FolderSync       added = " + newItem.getTitle());
             }
           } // end if file exists, can be read, etc.
         } // end while more files in specified folder
@@ -339,7 +333,6 @@ public class FolderSync
         for (i = 0; i < startingSize; i++) {
           next = items.get(i);
           if (! next.wasSynced()) {
-            // System.out.println("FolderSync item not synced");
             msgs.append("Deleted " + next.getTitle() + "\n");
             items.remove (next);
             deleted++;
@@ -417,6 +410,160 @@ public class FolderSync
     return changed;
   }
   
+  
+  /**
+   Push Two Due metadata back into the associated text files, in Notenik format. 
+  
+   @return True if no problems, false otherwise. 
+  */
+  private boolean pushMetadata() {
+    
+    boolean ok = true;
+    
+    File syncFolder = new File (syncFolderTextField.getText());
+    
+    // Make sure we've got the necessary info to work with
+    if (syncFolder.exists()
+        && syncFolder.isDirectory()
+        && syncFolder.canRead()) {
+      ok = true;
+    } else {
+      Trouble.getShared().report(
+          this, 
+          "Trouble reading from folder: " + syncFolder.toString(), 
+          "Problem with Sync Folder");
+      ok = false;
+    }
+    
+    if (items == null) {
+      Trouble.getShared().report(
+          this, 
+          "Items not available for " + diskStore.getFile().toString(), 
+          "Problem with program logic");
+      ok = false;
+    }
+    
+    int pushed = 0;
+    
+    if (ok) {
+      noteIO = new NoteIO (syncFolder, NoteParms.NOTES_EXPANDED_TYPE);
+      try {
+        noteIO.openForInput();
+      } catch (IOException e) {
+        ok = false;
+      }
+    }
+    
+    if (ok) {
+      ToDoItem toDo;
+      SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM dd, yyyy");
+      for (int i = 0; i < items.size(); i++) {
+        toDo = items.get(i);
+        String webPage = toDo.getWebPage();
+        File linkedFile;
+        URL webURL = null;
+        if (webPage != null
+            && webPage.length() > 0
+            && webPage.startsWith("file:")) {
+          try {
+            webURL = new URL(webPage);
+          } catch (MalformedURLException m) {
+            ok = false;
+          }
+          if (ok) {
+            try {
+              linkedFile = new File(webURL.toURI());
+            } catch(URISyntaxException e) {
+              linkedFile = new File(webURL.getPath());
+            }
+            if (linkedFile.exists()
+                && linkedFile.isFile()
+                && linkedFile.canRead()
+                && NoteIO.isInterestedIn(linkedFile)) {
+              // process linked file as note
+              try {
+                Note note = noteIO.getNote(linkedFile, "");
+                boolean noteModified = false;
+                
+                if (toDo.hasTitle()
+                    && (! toDo.getTitle().equals (note.getTitle()))) {
+                  note.setTitle(toDo.getTitle());
+                  noteModified = true;
+                }
+                
+                if (toDo.hasTags()) {
+                  String toDoTags = toDo.getTagsAsString();
+                  if (! toDoTags.equalsIgnoreCase(note.getTagsAsString())) {
+                    note.setTags(toDoTags);
+                    noteModified = true;
+                  }
+                }
+                
+                if (toDo.hasDueDate()) {
+                  String toDoDate = toDo.getDueDate(NoteParms.HUMAN_DATE_FORMAT);
+                  if (! toDoDate.equalsIgnoreCase(note.getDateAsString())) {
+                    note.setDate(toDoDate);
+                    noteModified = true;
+                  }
+                }
+                
+                if (! note.hasDate()) {
+                  long modDateLong = linkedFile.lastModified();
+                  Date modDate = new Date(modDateLong);
+                  String modDateStr = dateFormatter.format(modDate);
+                  note.setDate(modDateStr);
+                }
+                
+                if (toDo.hasStatus()) {
+                  if (! toDo.getStatusLabel().equalsIgnoreCase(note.getStatusAsString())) {
+                    note.setStatus(toDo.getStatusLabel());
+                    noteModified = true;
+                  }
+                }
+                
+                if (toDo.hasDescription()) {
+                  String toDoDesc = toDo.getDescription();
+                  if (! toDoDesc.equalsIgnoreCase(note.getTeaser())) {
+                    note.setTeaser(toDoDesc);
+                    noteModified = true;
+                  }
+                }
+                
+                if (noteModified) {
+                  String oldDiskLocation = note.getDiskLocation();
+                  noteIO.save(note, linkedFile, true);
+                  String newDiskLocation = note.getDiskLocation();
+                  if (! newDiskLocation.equals(oldDiskLocation)) {
+                    File oldDiskFile = new File (oldDiskLocation);
+                    oldDiskFile.delete();
+                  }
+                  pushed++;
+                }
+                
+              } catch (IOException e) {
+                Trouble.getShared().report(
+                  this, 
+                  "I/O Exception reading note file: " + linkedFile.toString(), 
+                  "I/O Error");
+                ok = false;
+              }
+            } // end if linked file should be processed
+          } // end if we were able to get a URL from the web page field
+        } // end if we have a web page at all
+      } // end of sorted items
+      
+      noteIO.close();
+      msgs.append(String.valueOf(pushed) + " "
+          + StringUtils.pluralize("note", pushed)
+          + " pushed to sync folder\n");
+      
+      msgs.append("Folder Push Completed!\n");
+      
+    } // end if we have the right info for the job
+    
+    return ok;
+  }
+
   public void hideMe() {
     WindowMenuManager.getShared().hide(this);
   }
@@ -427,142 +574,159 @@ public class FolderSync
    * always regenerated by the Form Editor.
    */
   @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
+  // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+  private void initComponents() {
+    java.awt.GridBagConstraints gridBagConstraints;
 
-        folderLabel = new javax.swing.JLabel();
-        folderBrowseButton = new javax.swing.JButton();
-        syncFolderTextField = new javax.swing.JTextField();
-        syncButton = new javax.swing.JButton();
-        msgsScrollPane = new javax.swing.JScrollPane();
-        msgs = new javax.swing.JTextArea();
-        doneButton = new javax.swing.JButton();
-        deleteUnsyncedCheckBox = new javax.swing.JCheckBox();
-        autoSyncCheckBox = new javax.swing.JCheckBox();
+    folderLabel = new javax.swing.JLabel();
+    folderBrowseButton = new javax.swing.JButton();
+    syncFolderTextField = new javax.swing.JTextField();
+    syncButton = new javax.swing.JButton();
+    pushButton = new javax.swing.JButton();
+    msgsScrollPane = new javax.swing.JScrollPane();
+    msgs = new javax.swing.JTextArea();
+    doneButton = new javax.swing.JButton();
+    deleteUnsyncedCheckBox = new javax.swing.JCheckBox();
+    autoSyncCheckBox = new javax.swing.JCheckBox();
 
-        setTitle("Folder Sync");
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
-            }
-            public void componentHidden(java.awt.event.ComponentEvent evt) {
-                formComponentHidden(evt);
-            }
-        });
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+    setTitle("Folder Sync");
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        formComponentShown(evt);
+      }
+      public void componentHidden(java.awt.event.ComponentEvent evt) {
+        formComponentHidden(evt);
+      }
+    });
+    getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        folderLabel.setText("Folder:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 4);
-        getContentPane().add(folderLabel, gridBagConstraints);
+    folderLabel.setText("Folder:");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 4);
+    getContentPane().add(folderLabel, gridBagConstraints);
 
-        folderBrowseButton.setText("Browse...");
-        folderBrowseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                folderBrowseButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(folderBrowseButton, gridBagConstraints);
+    folderBrowseButton.setText("Browse...");
+    folderBrowseButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        folderBrowseButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(folderBrowseButton, gridBagConstraints);
 
-        syncFolderTextField.setColumns(60);
-        syncFolderTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                syncFolderTextFieldActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(syncFolderTextField, gridBagConstraints);
+    syncFolderTextField.setColumns(60);
+    syncFolderTextField.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        syncFolderTextFieldActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(syncFolderTextField, gridBagConstraints);
 
-        syncButton.setText("Sync");
-        syncButton.setMaximumSize(new java.awt.Dimension(140, 35));
-        syncButton.setMinimumSize(new java.awt.Dimension(100, 29));
-        syncButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                syncButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(syncButton, gridBagConstraints);
+    syncButton.setText("Sync");
+    syncButton.setMaximumSize(new java.awt.Dimension(140, 35));
+    syncButton.setMinimumSize(new java.awt.Dimension(100, 29));
+    syncButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        syncButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 4;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(syncButton, gridBagConstraints);
 
-        msgs.setColumns(20);
-        msgs.setRows(5);
-        msgsScrollPane.setViewportView(msgs);
+    pushButton.setText("Push");
+    pushButton.setToolTipText("Push metadata to associated files");
+    pushButton.setMaximumSize(new java.awt.Dimension(140, 35));
+    pushButton.setMinimumSize(new java.awt.Dimension(100, 29));
+    pushButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        pushButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 4;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(pushButton, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(msgsScrollPane, gridBagConstraints);
+    msgs.setColumns(20);
+    msgs.setRows(5);
+    msgsScrollPane.setViewportView(msgs);
 
-        doneButton.setText("Cancel");
-        doneButton.setMinimumSize(new java.awt.Dimension(100, 29));
-        doneButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                doneButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(doneButton, gridBagConstraints);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 5;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(msgsScrollPane, gridBagConstraints);
 
-        deleteUnsyncedCheckBox.setText("Delete Unsynced Items?");
-        deleteUnsyncedCheckBox.setToolTipText("Delete items from the list when they no longer have any similarly named files in the sync folder?");
-        deleteUnsyncedCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteUnsyncedCheckBoxActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(deleteUnsyncedCheckBox, gridBagConstraints);
+    doneButton.setText("Cancel");
+    doneButton.setMinimumSize(new java.awt.Dimension(100, 29));
+    doneButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        doneButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 6;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(doneButton, gridBagConstraints);
 
-        autoSyncCheckBox.setText("Auto Sync?");
-        autoSyncCheckBox.setToolTipText("Automatically sync with designated folder in the future?");
-        autoSyncCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoSyncCheckBoxActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        getContentPane().add(autoSyncCheckBox, gridBagConstraints);
+    deleteUnsyncedCheckBox.setText("Delete Unsynced Items?");
+    deleteUnsyncedCheckBox.setToolTipText("Delete items from the list when they no longer have any similarly named files in the sync folder?");
+    deleteUnsyncedCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteUnsyncedCheckBoxActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(deleteUnsyncedCheckBox, gridBagConstraints);
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+    autoSyncCheckBox.setText("Auto Sync?");
+    autoSyncCheckBox.setToolTipText("Automatically sync with designated folder in the future?");
+    autoSyncCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        autoSyncCheckBoxActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    getContentPane().add(autoSyncCheckBox, gridBagConstraints);
+
+    pack();
+  }// </editor-fold>//GEN-END:initComponents
 
 private void syncFolderTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFolderTextFieldActionPerformed
 // TODO add your handling code here:
@@ -609,16 +773,21 @@ private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:
     }
   }//GEN-LAST:event_autoSyncCheckBoxActionPerformed
 
+  private void pushButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushButtonActionPerformed
+    pushMetadata();
+  }//GEN-LAST:event_pushButtonActionPerformed
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox autoSyncCheckBox;
-    private javax.swing.JCheckBox deleteUnsyncedCheckBox;
-    private javax.swing.JButton doneButton;
-    private javax.swing.JButton folderBrowseButton;
-    private javax.swing.JLabel folderLabel;
-    private javax.swing.JTextArea msgs;
-    private javax.swing.JScrollPane msgsScrollPane;
-    private javax.swing.JButton syncButton;
-    private javax.swing.JTextField syncFolderTextField;
-    // End of variables declaration//GEN-END:variables
+
+  // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JCheckBox autoSyncCheckBox;
+  private javax.swing.JCheckBox deleteUnsyncedCheckBox;
+  private javax.swing.JButton doneButton;
+  private javax.swing.JButton folderBrowseButton;
+  private javax.swing.JLabel folderLabel;
+  private javax.swing.JTextArea msgs;
+  private javax.swing.JScrollPane msgsScrollPane;
+  private javax.swing.JButton pushButton;
+  private javax.swing.JButton syncButton;
+  private javax.swing.JTextField syncFolderTextField;
+  // End of variables declaration//GEN-END:variables
 }

@@ -1097,6 +1097,9 @@ public class ToDoItem
     this.tags = tags;
   }
   
+  public boolean hasTags() {
+    return (tags != null && tags.toString().length() > 0);
+  }
 	/**
 	 Return the tags assigned to this taggable item. 
 
@@ -1757,6 +1760,12 @@ public class ToDoItem
     return status.getValueAsInt();
   }
   
+  public boolean hasStatus() {
+    return (status != null 
+        && status.getStatus() >= ActionStatus.STATUS_LOW 
+        && status.getStatus() <= ActionStatus.STATUS_HIGH);
+  }
+  
   /**
     Returns a String with a label for the status value.
    
@@ -1888,6 +1897,10 @@ public class ToDoItem
   public void setTitle (String title) {
     this.title = StringUtils.purifyInvisibles(title).trim();
   }
+  
+  public boolean hasTitle() {
+    return (title != null && title.length() > 0);
+  }
 
   /**
      Returns the title of this item.
@@ -1916,6 +1929,10 @@ public class ToDoItem
         (StringUtils.encodeHTML(description).trim(), 
           "<br />", 
           "<br>");
+  }
+  
+  public boolean hasDescription() {
+    return (description != null && description.length() > 0);
   }
 
   /**
