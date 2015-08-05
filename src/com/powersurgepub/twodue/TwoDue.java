@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 Herb Bowie
+ * Copyright 2003 - 2015 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class TwoDue
           {
   
   public static final String PROGRAM_NAME = "Two Due";
-  public static final String PROGRAM_VERSION = "3.20";
+  public static final String PROGRAM_VERSION = "3.30";
   
   public static final int    CHILD_WINDOW_X_OFFSET = 60;
   public static final int    CHILD_WINDOW_Y_OFFSET = 60;

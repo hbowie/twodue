@@ -1,4 +1,11 @@
 
+## Version 3.30 (2015-08-04)
+
+1. **Added Button to File Sync to Push Metadata to Matching files in the Sync Folder**
+
+    The Push button pushes key metadata from the Two Due file to the linked files in the Sync folder.
+
+
 ## Version 3.20 (2014-10-18)
 
 1. **Added Tags Export Preferences**

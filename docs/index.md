@@ -178,7 +178,7 @@ Because Two Due may be run on multiple platforms, it may look slightly different
 <h3 id="rights">Rights</h3>
 
 
-Two Due Copyright 1999 - 2014 by Herb Bowie
+Two Due Copyright 1999 - 2015 by Herb Bowie
 
 Two Due is [open source software](http://opensource.org/osd). Source code is available at [GitHub](http://github.com/hbowie/twodue).
 
