@@ -2203,12 +2203,20 @@ public class TwoDueCommon
       if (diskStore.isAFolder()) {
         try {
           items.export(diskStore.getExportTDF());
+          logEvent (LogEvent.NORMAL,
+              "Exported Succeessfully to " 
+                  + diskStore.getExportTDF().getAbsolutePath(),
+              false);
         } catch (java.io.IOException e) {
           trouble.report 
               ("Trouble writing export file", "Export Problem");
         }
         try {
           items.getAllForEachTag(diskStore.getSplitTagsTDF());
+          logEvent (LogEvent.NORMAL,
+              "Exported Split File Succeessfully to " 
+                  + diskStore.getSplitTagsTDF().getAbsolutePath(),
+              false);
         } catch (java.io.IOException e) {
           trouble.report 
               ("Trouble writing split tags file", "Split Tags Problem");
