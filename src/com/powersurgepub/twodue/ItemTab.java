@@ -16,7 +16,7 @@
 
 package com.powersurgepub.twodue;
 
-import com.powersurgepub.psdatalib.psdata.widgets.TextSelector;
+  import com.powersurgepub.psdatalib.psdata.widgets.*;
   import com.powersurgepub.psdatalib.elements.*;
   import com.powersurgepub.psdatalib.ui.*;
 	import com.powersurgepub.psutils.*;
