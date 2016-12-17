@@ -565,7 +565,7 @@ public class FolderSync
   }
 
   public void hideMe() {
-    WindowMenuManager.getShared().hide(this);
+    WindowMenuManager.getShared().hideAndRemove(this);
   }
 
   /** This method is called from within the constructor to
