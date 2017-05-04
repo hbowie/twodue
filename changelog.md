@@ -566,7 +566,7 @@
     Created a User Guide and published it on the PowerSurgePub Web site.
 
 
-## Version .9 ()
+## Version 0.9 ()
 
 1. **Initial release of program for beta testing**
 
